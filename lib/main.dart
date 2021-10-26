@@ -61,6 +61,23 @@ class Employee {
   }
 }
 
+class AuthenticatedUser {
+  final String session_id;
+  final Employee employee;
+
+  AuthenticatedUser({
+    required this.session_id,
+    required this.employee,
+  });
+
+  factory AuthenticatedUser.fromJson(Map<String, dynamic> json) {
+    return AuthenticatedUser(
+        session_id: json['session_id'],
+        employee: Employee.fromJson(json['employee']),
+    );
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
