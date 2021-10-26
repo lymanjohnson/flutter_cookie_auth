@@ -13,8 +13,7 @@ Future<AuthenticatedUser> authenticateUser(
     // },
     body: {'username': username, 'password': password},
   );
-
-  if (response.statusCode == 201) {
+  if (response.statusCode >= 200 && response.statusCode < 300 ) {
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
     return AuthenticatedUser.fromJson(jsonDecode(response.body));
@@ -153,14 +152,11 @@ class _MyAppState extends State<MyApp> {
     return FutureBuilder<AuthenticatedUser>(
       future: _futureAuthenticatedUser,
       builder: (context, snapshot) {
-        print(context);
-        print(snapshot);
         if (snapshot.hasData) {
-          return Text(snapshot.data!.session_id);
+          return Text("User Employee ID: " + snapshot.data!.employee.id.toString() + "\nSession: " + snapshot.data!.session_id);
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-
         return const CircularProgressIndicator();
       },
     );
