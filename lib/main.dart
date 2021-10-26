@@ -78,6 +78,47 @@ class AuthenticatedUser {
   }
 }
 
+class Incident {
+  final int id; //": 425,
+  final int number; //": 1,
+  final int type; //": 2,
+  final int employee; //": 4714,
+  final int createdBy; //": 4719,
+  final DateTime modified; //": "2021-09-09T18:37:47.673233Z",
+  final DateTime created; //": "2018-05-07T21:52:17.754005Z",
+  final DateTime time; //": "2018-05-07T21:51:26Z",
+  final String status; //": "active",
+  final String? description; //": null
+
+  Incident({
+    required this.id,
+    required this.number,
+    required this.type,
+    required this.employee,
+    required this.createdBy,
+    required this.modified,
+    required this.created,
+    required this.time,
+    required this.status,
+    this.description,
+  });
+
+  factory Incident.fromJson(Map<String, dynamic> json) {
+    return Incident(
+        id: json['id'],
+        number: json['number'],
+        type: json['type'],
+        employee: json['employee'],
+        createdBy: json['createdBy'],
+        modified: DateTime.parse(json['modified']),
+        created: DateTime.parse(json['created']),
+        time: DateTime.parse(json['time']),
+        status: json['status'],
+        description: json['description'],
+    );
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
