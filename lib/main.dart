@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<AuthenticatedUser> authenticateUser(String username, String password) async {
+Future<AuthenticatedUser> authenticateUser(
+    String username, String password) async {
   final response = await http.post(
     Uri.parse('http://localhost:8000/api_login/'),
     // headers: <String, String>{
@@ -72,8 +73,8 @@ class AuthenticatedUser {
 
   factory AuthenticatedUser.fromJson(Map<String, dynamic> json) {
     return AuthenticatedUser(
-        session_id: json['session_id'],
-        employee: Employee.fromJson(json['employee']),
+      session_id: json['session_id'],
+      employee: Employee.fromJson(json['employee']),
     );
   }
 }
@@ -92,8 +93,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final TextEditingController _usernameController = TextEditingController(text:'psmith');
-  final TextEditingController _passwordController = TextEditingController(text:'123456');
+  final TextEditingController _usernameController =
+      TextEditingController(text: 'psmith');
+  final TextEditingController _passwordController =
+      TextEditingController(text: '123456');
   Future<AuthenticatedUser>? _futureAuthenticatedUser;
 
   @override
@@ -110,7 +113,9 @@ class _MyAppState extends State<MyApp> {
         body: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(8.0),
-          child: (_futureAuthenticatedUser == null) ? buildColumn() : buildFutureBuilder(),
+          child: (_futureAuthenticatedUser == null)
+              ? buildColumn()
+              : buildFutureBuilder(),
         ),
       ),
     );
@@ -120,19 +125,22 @@ class _MyAppState extends State<MyApp> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        TextField( // username
+        TextField(
+          // username
           controller: _usernameController,
 
           decoration: const InputDecoration(hintText: 'Username'),
         ),
-        TextField( // password
+        TextField(
+          // password
           controller: _passwordController,
           decoration: const InputDecoration(hintText: 'Password'),
         ),
         ElevatedButton(
           onPressed: () {
             setState(() {
-              _futureAuthenticatedUser = authenticateUser(_usernameController.text, _passwordController.text);
+              _futureAuthenticatedUser = authenticateUser(
+                  _usernameController.text, _passwordController.text);
             });
           },
           child: const Text('Create Data'),
@@ -145,6 +153,8 @@ class _MyAppState extends State<MyApp> {
     return FutureBuilder<AuthenticatedUser>(
       future: _futureAuthenticatedUser,
       builder: (context, snapshot) {
+        print(context);
+        print(snapshot);
         if (snapshot.hasData) {
           return Text(snapshot.data!.session_id);
         } else if (snapshot.hasError) {
