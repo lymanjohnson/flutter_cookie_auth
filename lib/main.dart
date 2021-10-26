@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<Album> createAlbum(String username, String password) async {
+Future<Album> authenticateUser(String username, String password) async {
   final response = await http.post(
     Uri.parse('http://localhost:8000/api_login/'),
     // headers: <String, String>{
@@ -34,6 +34,29 @@ class Album {
     return Album(
       id: json['id'],
       title: json['title'],
+    );
+  }
+}
+
+class Employee {
+  final int id;
+  final int company;
+  final String first_name;
+  final String last_name;
+
+  Employee({
+    required this.id,
+    required this.company,
+    required this.first_name,
+    required this.last_name,
+  });
+
+  factory Employee.fromJson(Map<String, dynamic> json) {
+    return Employee(
+      id: json['id'],
+      company: json['company'],
+      first_name: json['first_name'],
+      last_name: json['last_name'],
     );
   }
 }
@@ -91,7 +114,7 @@ class _MyAppState extends State<MyApp> {
         ElevatedButton(
           onPressed: () {
             setState(() {
-              _futureAlbum = createAlbum(_usernameController.text, _passwordController.text);
+              _futureAlbum = authenticateUser(_usernameController.text, _passwordController.text);
             });
           },
           child: const Text('Create Data'),
