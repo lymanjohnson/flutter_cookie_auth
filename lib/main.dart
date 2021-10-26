@@ -3,20 +3,19 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:requests/requests.dart';
 
 Future<AuthenticatedUser> authenticateUser(
     String username, String password) async {
-  final response = await http.post(
-    Uri.parse('http://localhost:8000/api_login/'),
-    // headers: <String, String>{
-    //   'Content-Type': 'application/json; charset=UTF-8',
-    // },
+  final response = await Requests.post(
+    'http://localhost:8000/api_login/',
     body: {'username': username, 'password': password},
+    bodyEncoding: RequestBodyEncoding.FormURLEncoded,
   );
-  if (response.statusCode >= 200 && response.statusCode < 300 ) {
+  if (response.statusCode >= 200 && response.statusCode < 300) {
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
-    return AuthenticatedUser.fromJson(jsonDecode(response.body));
+    return AuthenticatedUser.fromJson(jsonDecode(response.json()));
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
@@ -105,16 +104,16 @@ class Incident {
 
   factory Incident.fromJson(Map<String, dynamic> json) {
     return Incident(
-        id: json['id'],
-        number: json['number'],
-        type: json['type'],
-        employee: json['employee'],
-        createdBy: json['createdBy'],
-        modified: DateTime.parse(json['modified']),
-        created: DateTime.parse(json['created']),
-        time: DateTime.parse(json['time']),
-        status: json['status'],
-        description: json['description'],
+      id: json['id'],
+      number: json['number'],
+      type: json['type'],
+      employee: json['employee'],
+      createdBy: json['createdBy'],
+      modified: DateTime.parse(json['modified']),
+      created: DateTime.parse(json['created']),
+      time: DateTime.parse(json['time']),
+      status: json['status'],
+      description: json['description'],
     );
   }
 }
@@ -194,7 +193,10 @@ class _MyAppState extends State<MyApp> {
       future: _futureAuthenticatedUser,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Text("User Employee ID: " + snapshot.data!.employee.id.toString() + "\nSession: " + snapshot.data!.session_id);
+          return Text("User Employee ID: " +
+              snapshot.data!.employee.id.toString() +
+              "\nSession: " +
+              snapshot.data!.session_id);
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
