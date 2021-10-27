@@ -100,7 +100,7 @@ class NetworkService {
 
 Future<AuthenticatedUser> authenticateUser(
     String username, String password) async {
-  final response = await http.post(
+  final response = await NetworkService.post(
     Uri.parse('http://localhost:8000/api_login/'),
     body: {'username': username, 'password': password},
   );
@@ -116,7 +116,7 @@ Future<AuthenticatedUser> authenticateUser(
 }
 
 // Future<IncidentSet> fetchIncidents() async {
-//   final r = await http.get(
+//   final r = await NetworkService.get(
 //       Uri.parse('http://localhost:8000/api/v1/incident/'),
 //   );
 //   if (response.statusCode >= 200 && response.statusCode < 300) {
