@@ -56,7 +56,9 @@ class NetworkService {
   }
 
   Future<dynamic> get(String url) {
-    return http.get(Uri.parse(url), headers: headers).then((http.Response response) {
+    return http
+        .get(Uri.parse(url), headers: headers)
+        .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
 
@@ -70,7 +72,10 @@ class NetworkService {
   }
 
   Future<dynamic> post(String url, {body, encoding}) {
-    return http.post(Uri.parse(url), body: _encoder.convert(body), headers: headers, encoding: encoding).then((http.Response response) {
+    return http
+        .post(Uri.parse(url),
+            body: _encoder.convert(body), headers: headers, encoding: encoding)
+        .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
 
@@ -84,7 +89,10 @@ class NetworkService {
   }
 
   Future<dynamic> put(String url, {body, encoding}) {
-    return http.put(Uri.parse(url), body: _encoder.convert(body), headers: headers, encoding: encoding).then((http.Response response) {
+    return http
+        .put(Uri.parse(url),
+            body: _encoder.convert(body), headers: headers, encoding: encoding)
+        .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
 
@@ -111,16 +119,16 @@ Future<AuthenticatedUser> authenticateUser(
   }
 }
 
-Future<IncidentSet> fetchIncidents() async {
-  final r = await NetworkService.get(
-      Uri.parse('http://localhost:8000/api/v1/incident/'),
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return AuthenticatedUser.fromJson(jsonDecode(response.json()));
-  } else {
-    throw Exception('Failed to create authenticated user object.');
-  }
-}
+// Future<IncidentSet> fetchIncidents() async {
+//   final r = await NetworkService.get(
+//     Uri.parse('http://localhost:8000/api/v1/incident/'),
+//   );
+//   if (response.statusCode >= 200 && response.statusCode < 300) {
+//     return AuthenticatedUser.fromJson(jsonDecode(response.body));
+//   } else {
+//     throw Exception('Failed to create authenticated user object.');
+//   }
+// }
 
 class Album {
   final int id;
@@ -216,6 +224,26 @@ class Incident {
     );
   }
 }
+
+// class IncidentSet {
+//   final List<Incident> incidents;
+//
+//   IncidentSet({
+//     required this.incidents,
+//   })
+//
+//   factory IncidentSet.fromJson(Map<String, dynamic> jsonArray) {
+//     jsonArray.forEach((jsonIncident) {
+//       Incident incident = Incident.fromJson(jsonIncident);
+//       incidents.add(incident);
+//     })
+//     // List<dynamic> incidentArray = json.decode(jsonArray)
+//     // Map<String, dynamic> myMap = json.decode(jsonStr);
+//     // List<dynamic> entitlements = myMap["Dependents"][0]["Entitlements"];
+//
+//   }
+//
+// }
 
 void main() {
   runApp(const MyApp());
