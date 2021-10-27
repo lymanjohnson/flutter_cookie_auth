@@ -73,8 +73,7 @@ class NetworkService {
 
   Future<dynamic> post(String url, {body, encoding}) {
     return http
-        .post(Uri.parse(url),
-        body: body, headers: headers, encoding: encoding)
+        .post(Uri.parse(url), body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
@@ -90,8 +89,7 @@ class NetworkService {
 
   Future<dynamic> put(String url, {body, encoding}) {
     return http
-        .put(Uri.parse(url),
-        body: body, headers: headers, encoding: encoding)
+        .put(Uri.parse(url), body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
@@ -106,8 +104,8 @@ class NetworkService {
   }
 }
 
-Future<AuthenticatedUser> authenticateUser(String username,
-    String password) async {
+Future<AuthenticatedUser> authenticateUser(
+    String username, String password) async {
   final res = await NetworkService().post(
     'http://localhost:8000/api_login/',
     body: {'username': username, 'password': password},
@@ -122,8 +120,8 @@ Future<IncidentSet> fetchIncidents() async {
   return IncidentSet.fromJson(res);
 }
 
-Future<IncidentSet> loginAndFetchIncidents(String username,
-    String password) async {
+Future<IncidentSet> loginAndFetchIncidents(
+    String username, String password) async {
   final ns = NetworkService();
   final r1 = await ns.post(
     'http://localhost:8000/api_login/',
@@ -134,7 +132,6 @@ Future<IncidentSet> loginAndFetchIncidents(String username,
     'http://localhost:8000/api/v1/incident/',
   );
   return IncidentSet.fromJson(r2);
-
 }
 
 class Album {
@@ -270,10 +267,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final TextEditingController _usernameController =
-  TextEditingController(text: 'psmith');
+      TextEditingController(text: 'psmith');
   final TextEditingController _passwordController =
-  TextEditingController(text: '123456');
+      TextEditingController(text: '123456');
   Future<AuthenticatedUser>? _futureAuthenticatedUser;
+  Future<IncidentSet>? _futureIncidentSet;
 
   @override
   Widget build(BuildContext context) {
@@ -286,12 +284,23 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Create Data Example'),
         ),
-        body: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(8.0),
-          child: (_futureAuthenticatedUser == null)
-              ? buildColumn()
-              : buildFutureBuilder(),
+        body: Column(
+          children: [
+            // Container(
+            //   alignment: Alignment.center,
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: (_futureAuthenticatedUser == null)
+            //       ? buildColumn()
+            //       : buildFutureAuthenticatedUser(),
+            // ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: (_futureIncidentSet == null)
+                  ? buildColumn()
+                  : buildFutureIncidentSet(),
+            ),
+          ],
         ),
       ),
     );
@@ -315,8 +324,10 @@ class _MyAppState extends State<MyApp> {
         ElevatedButton(
           onPressed: () {
             setState(() {
-              _futureAuthenticatedUser = authenticateUser(
+              _futureIncidentSet = loginAndFetchIncidents(
                   _usernameController.text, _passwordController.text);
+              // _futureAuthenticatedUser = authenticateUser(
+              //     _usernameController.text, _passwordController.text);
             });
           },
           child: const Text('Create Data'),
@@ -325,7 +336,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  FutureBuilder<AuthenticatedUser> buildFutureBuilder() {
+  FutureBuilder<AuthenticatedUser> buildFutureAuthenticatedUser() {
     return FutureBuilder<AuthenticatedUser>(
       future: _futureAuthenticatedUser,
       builder: (context, snapshot) {
@@ -334,6 +345,20 @@ class _MyAppState extends State<MyApp> {
               snapshot.data!.employee.id.toString() +
               "\nSession: " +
               snapshot.data!.session_id);
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+        return const CircularProgressIndicator();
+      },
+    );
+  }
+
+  FutureBuilder<IncidentSet> buildFutureIncidentSet() {
+    return FutureBuilder<IncidentSet>(
+      future: _futureIncidentSet,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Text(snapshot.data!.toString());
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
