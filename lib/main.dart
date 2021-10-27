@@ -8,7 +8,7 @@ class NetworkService {
   final JsonDecoder _decoder = const JsonDecoder();
   final JsonEncoder _encoder = const JsonEncoder();
 
-  Map<String, String> headers = {"content-type": "application/json"};
+  Map<String, String> headers = {};
   Map<String, String> cookies = {};
 
   void _updateCookie(http.Response response) {
@@ -74,7 +74,7 @@ class NetworkService {
   Future<dynamic> post(String url, {body, encoding}) {
     return http
         .post(Uri.parse(url),
-            body: _encoder.convert(body), headers: headers, encoding: encoding)
+            body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
@@ -91,7 +91,7 @@ class NetworkService {
   Future<dynamic> put(String url, {body, encoding}) {
     return http
         .put(Uri.parse(url),
-            body: _encoder.convert(body), headers: headers, encoding: encoding)
+            body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
@@ -108,15 +108,11 @@ class NetworkService {
 
 Future<AuthenticatedUser> authenticateUser(
     String username, String password) async {
-  final response = await NetworkService.post(
-    Uri.parse('http://localhost:8000/api_login/'),
+  final response = await NetworkService().post(
+    'http://localhost:8000/api_login/',
     body: {'username': username, 'password': password},
   );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return AuthenticatedUser.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to create authenticated user object.');
-  }
+    return AuthenticatedUser.fromJson(response);
 }
 
 // Future<IncidentSet> fetchIncidents() async {
