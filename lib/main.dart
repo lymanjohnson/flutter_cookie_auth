@@ -221,25 +221,28 @@ class Incident {
   }
 }
 
-// class IncidentSet {
-//   final List<Incident> incidents;
-//
-//   IncidentSet({
-//     required this.incidents,
-//   })
-//
-//   factory IncidentSet.fromJson(Map<String, dynamic> jsonArray) {
-//     jsonArray.forEach((jsonIncident) {
-//       Incident incident = Incident.fromJson(jsonIncident);
-//       incidents.add(incident);
-//     })
-//     // List<dynamic> incidentArray = json.decode(jsonArray)
-//     // Map<String, dynamic> myMap = json.decode(jsonStr);
-//     // List<dynamic> entitlements = myMap["Dependents"][0]["Entitlements"];
-//
-//   }
-//
-// }
+class IncidentSet {
+  final List<Incident> incidents;
+
+  IncidentSet({
+    required this.incidents,
+  });
+
+  factory IncidentSet.fromJson(Map<String, dynamic> jsonArray) {
+    List<Incident> incidents = [];
+    jsonArray.forEach((key, val) {
+      Incident incident = Incident.fromJson(jsonDecode(key));
+      incidents.add(incident);
+    });
+
+    return IncidentSet(
+      incidents: incidents,
+    );
+  }
+    // List<dynamic> incidentArray = json.decode(jsonArray)
+    // Map<String, dynamic> myMap = json.decode(jsonStr);
+    // List<dynamic> entitlements = myMap["Dependents"][0]["Entitlements"];
+}
 
 void main() {
   runApp(const MyApp());
