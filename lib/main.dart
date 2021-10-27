@@ -3,19 +3,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:requests/requests.dart';
 
 Future<AuthenticatedUser> authenticateUser(
     String username, String password) async {
-  final response = await Requests.post(
-    'http://localhost:8000/api_login/',
+  final response = await http.post(
+    Uri.parse('http://localhost:8000/api_login/'),
     body: {'username': username, 'password': password},
-    bodyEncoding: RequestBodyEncoding.FormURLEncoded,
   );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
-    return AuthenticatedUser.fromJson(jsonDecode(response.json()));
+    return AuthenticatedUser.fromJson(jsonDecode(response.body));
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
@@ -23,20 +21,20 @@ Future<AuthenticatedUser> authenticateUser(
   }
 }
 
-Future<IncidentSet> fetchIncidents() async {
-  final r = await Requests.get(
-      'http://localhost:8000/api/v1/incident/',
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    // If the server did return a 201 CREATED response,
-    // then parse the JSON.
-    return AuthenticatedUser.fromJson(jsonDecode(response.json()));
-  } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Failed to create authenticated user object.');
-  }
-}
+// Future<IncidentSet> fetchIncidents() async {
+//   final r = await http.get(
+//       Uri.parse('http://localhost:8000/api/v1/incident/'),
+//   );
+//   if (response.statusCode >= 200 && response.statusCode < 300) {
+//     // If the server did return a 201 CREATED response,
+//     // then parse the JSON.
+//     return AuthenticatedUser.fromJson(jsonDecode(response.json()));
+//   } else {
+//     // If the server did not return a 201 CREATED response,
+//     // then throw an exception.
+//     throw Exception('Failed to create authenticated user object.');
+//   }
+// }
 
 class Album {
   final int id;
