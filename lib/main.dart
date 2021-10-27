@@ -105,30 +105,22 @@ Future<AuthenticatedUser> authenticateUser(
     body: {'username': username, 'password': password},
   );
   if (response.statusCode >= 200 && response.statusCode < 300) {
-    // If the server did return a 201 CREATED response,
-    // then parse the JSON.
     return AuthenticatedUser.fromJson(jsonDecode(response.body));
   } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
     throw Exception('Failed to create authenticated user object.');
   }
 }
 
-// Future<IncidentSet> fetchIncidents() async {
-//   final r = await NetworkService.get(
-//       Uri.parse('http://localhost:8000/api/v1/incident/'),
-//   );
-//   if (response.statusCode >= 200 && response.statusCode < 300) {
-//     // If the server did return a 201 CREATED response,
-//     // then parse the JSON.
-//     return AuthenticatedUser.fromJson(jsonDecode(response.json()));
-//   } else {
-//     // If the server did not return a 201 CREATED response,
-//     // then throw an exception.
-//     throw Exception('Failed to create authenticated user object.');
-//   }
-// }
+Future<IncidentSet> fetchIncidents() async {
+  final r = await NetworkService.get(
+      Uri.parse('http://localhost:8000/api/v1/incident/'),
+  );
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return AuthenticatedUser.fromJson(jsonDecode(response.json()));
+  } else {
+    throw Exception('Failed to create authenticated user object.');
+  }
+}
 
 class Album {
   final int id;
