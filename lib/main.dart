@@ -74,7 +74,7 @@ class NetworkService {
   Future<dynamic> post(String url, {body, encoding}) {
     return http
         .post(Uri.parse(url),
-            body: body, headers: headers, encoding: encoding)
+        body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
@@ -91,7 +91,7 @@ class NetworkService {
   Future<dynamic> put(String url, {body, encoding}) {
     return http
         .put(Uri.parse(url),
-            body: body, headers: headers, encoding: encoding)
+        body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
@@ -106,25 +106,36 @@ class NetworkService {
   }
 }
 
-Future<AuthenticatedUser> authenticateUser(
-    String username, String password) async {
-  final response = await NetworkService().post(
+Future<AuthenticatedUser> authenticateUser(String username,
+    String password) async {
+  final res = await NetworkService().post(
     'http://localhost:8000/api_login/',
     body: {'username': username, 'password': password},
   );
-    return AuthenticatedUser.fromJson(response);
+  return AuthenticatedUser.fromJson(res);
 }
 
-// Future<IncidentSet> fetchIncidents() async {
-//   final r = await NetworkService.get(
-//     Uri.parse('http://localhost:8000/api/v1/incident/'),
-//   );
-//   if (response.statusCode >= 200 && response.statusCode < 300) {
-//     return AuthenticatedUser.fromJson(jsonDecode(response.body));
-//   } else {
-//     throw Exception('Failed to create authenticated user object.');
-//   }
-// }
+Future<IncidentSet> fetchIncidents() async {
+  final res = await NetworkService().get(
+    'http://localhost:8000/api/v1/incident/',
+  );
+  return IncidentSet.fromJson(res);
+}
+
+Future<IncidentSet> loginAndFetchIncidents(String username,
+    String password) async {
+  final ns = NetworkService();
+  final r1 = await ns.post(
+    'http://localhost:8000/api_login/',
+    body: {'username': username, 'password': password},
+  );
+  // final user = AuthenticatedUser.fromJson(r1);
+  final r2 = await ns.get(
+    'http://localhost:8000/api/v1/incident/',
+  );
+  return IncidentSet.fromJson(r2);
+
+}
 
 class Album {
   final int id;
@@ -239,9 +250,9 @@ class IncidentSet {
       incidents: incidents,
     );
   }
-    // List<dynamic> incidentArray = json.decode(jsonArray)
-    // Map<String, dynamic> myMap = json.decode(jsonStr);
-    // List<dynamic> entitlements = myMap["Dependents"][0]["Entitlements"];
+// List<dynamic> incidentArray = json.decode(jsonArray)
+// Map<String, dynamic> myMap = json.decode(jsonStr);
+// List<dynamic> entitlements = myMap["Dependents"][0]["Entitlements"];
 }
 
 void main() {
@@ -259,9 +270,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final TextEditingController _usernameController =
-      TextEditingController(text: 'psmith');
+  TextEditingController(text: 'psmith');
   final TextEditingController _passwordController =
-      TextEditingController(text: '123456');
+  TextEditingController(text: '123456');
   Future<AuthenticatedUser>? _futureAuthenticatedUser;
 
   @override
